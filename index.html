@@ -257,12 +257,9 @@
 
     // TERHUBUNG KE BACKEND FASTAPI DI HP
     async function processChat(txt) {
-    // TERHUBUNG KE BACKEND FASTAPI DI HP
-    async function processChat(txt) {
       if (!curKey) return;
       
       try {
-        // Melakukan request HTTP POST ke server FastAPI lokal dengan format yang valid
         let response = await fetch('http://127.0.0.1:8000/chat', {
           method: 'POST',
           headers: {
@@ -280,19 +277,6 @@
 
         let data = await response.json();
         
-        // Menampilkan balasan yang dikirim dari server Python (FastAPI)
-        appendAndSaveBubble("char", data.response);
-        updateUI();
-
-      } catch (error) {
-        console.error("Error:", error);
-        appendAndSaveBubble("char", "[Sistem] Gagal terhubung ke backend FastAPI di HP. Pastikan server Uvicorn sudah menyala!");
-      }
-    }
-
-        let data = await response.json();
-        
-        // Menampilkan balasan yang dikirim dari server Python (FastAPI)
         appendAndSaveBubble("char", data.response);
         updateUI();
 
