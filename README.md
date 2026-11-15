@@ -1,1 +1,437 @@
 # AuraEcho
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraEcho - Master Build v4.0 (Migration Ready)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: #f8fafc; margin: 0; padding: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  </style>
+</head>
+<body>
+
+  <!-- CONTAINER UTAMA (Frame HP Terkunci) -->
+  <div class="w-full max-w-sm h-[90vh] bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl flex flex-col relative overflow-hidden">
+
+    <!-- ================= 1. MENU UTAMA ================= -->
+    <div id="screen-menu" style="display: flex; flex-direction: column; height: 100%; overflow-y: auto; padding: 16px;">
+      <div class="text-center my-3">
+        <span class="px-3 py-1 text-[10px] font-semibold uppercase bg-indigo-500/20 text-indigo-300 rounded-full border border-indigo-500/30">
+          Master Build v4.0 (Ready)
+        </span>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent mt-1">
+          AuraEcho
+        </h1>
+        <p class="text-xs text-slate-400">Pilih resonansi karakter untuk memulai</p>
+      </div>
+
+      <!-- Grid Karakter -->
+      <div class="grid grid-cols-2 gap-2.5 my-3">
+        <button onclick="selectCharacter('luna')" class="text-left p-3 rounded-2xl bg-slate-800 hover:bg-slate-750 border border-slate-700 transition flex flex-col justify-between">
+          <div>
+            <span class="text-xl">👧</span>
+            <h3 class="font-bold text-xs text-white mt-1">Luna</h3>
+            <span class="text-[8px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Slice of Life</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-2">Pelajar • Tsundere</p>
+        </button>
+
+        <button onclick="selectCharacter('felicia')" class="text-left p-3 rounded-2xl bg-slate-800 hover:bg-slate-750 border border-slate-700 transition flex flex-col justify-between">
+          <div>
+            <span class="text-xl">👩</span>
+            <h3 class="font-bold text-xs text-white mt-1">Felicia</h3>
+            <span class="text-[8px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Slice of Life</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-2">Kantoran • Ramah</p>
+        </button>
+
+        <button onclick="selectCharacter('miyu')" class="text-left p-3 rounded-2xl bg-slate-800 hover:bg-slate-750 border border-slate-700 transition flex flex-col justify-between">
+          <div>
+            <span class="text-xl">🎧</span>
+            <h3 class="font-bold text-xs text-white mt-1">Miyu</h3>
+            <span class="text-[8px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Slice of Life</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-2">Freelancer + 💭</p>
+        </button>
+
+        <button onclick="selectCharacter('aria')" class="text-left p-3 rounded-2xl bg-purple-950/60 hover:bg-purple-900/60 border border-purple-500/40 transition flex flex-col justify-between">
+          <div>
+            <span class="text-xl">🔮</span>
+            <h3 class="font-bold text-xs text-purple-200 mt-1">Aria</h3>
+            <span class="text-[8px] px-1.5 py-0.5 rounded bg-purple-500/30 text-purple-200">Fantasi</span>
+          </div>
+          <p class="text-[10px] text-purple-300 mt-2">Akademi Sihir</p>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= 2. RUANG CHAT ================= -->
+    <div id="screen-chat" style="display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; top: 0; left: 0; background-color: #0f172a; overflow: hidden; z-index: 10;">
+      
+      <!-- Header Chat -->
+      <div class="p-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-md">
+        <div class="flex items-center gap-2.5">
+          <button onclick="goMenu()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">←</button>
+          <span id="c-avatar" class="text-2xl">👧</span>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h2 id="c-name" class="font-bold text-xs text-white">Luna</h2>
+              <span id="c-mood" class="text-[8px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Normal</span>
+            </div>
+            <p id="c-stage" class="text-[9px] text-indigo-400 font-medium">Orang Asing • Trust: 15</p>
+          </div>
+        </div>
+        <button onclick="openProfile()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200">⚙️ Profil</button>
+      </div>
+
+      <!-- Info Lokasi & Waktu -->
+      <div class="px-3 py-1.5 bg-slate-950/90 border-b border-slate-800 flex justify-between text-[10px] text-slate-400 shrink-0">
+        <span class="truncate">🗺️ <strong id="c-loc" class="text-slate-200">Lokasi...</strong></span>
+        <span id="c-time" class="font-mono">00:00</span>
+      </div>
+
+      <!-- Kotak Pesan Chat -->
+      <div id="chat-box" class="p-3 space-y-3 text-xs flex-1 overflow-y-auto flex flex-col"></div>
+
+      <!-- Quick Actions -->
+      <div class="px-3 py-2 bg-slate-900/90 border-t border-slate-800 flex gap-1.5 overflow-x-auto text-[10px] shrink-0">
+        <button onclick="quickAction('kado')" class="shrink-0 px-2.5 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition">🎁 Beri Kado</button>
+        <button onclick="quickAction('hobi')" class="shrink-0 px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-750 transition">🧠 Cerita Hobi</button>
+        <button onclick="quickAction('maaf')" class="shrink-0 px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-750 transition">🙏 Minta Maaf</button>
+      </div>
+
+      <!-- Input Bar (Formless & Anti-Mental) -->
+      <div class="p-2.5 bg-slate-900 border-t border-slate-800 flex gap-2 shrink-0">
+        <input id="msg-input" type="text" placeholder="Ketik pesan..." autocomplete="off" onkeydown="checkEnter(event)"
+          class="flex-1 bg-slate-800 text-white placeholder-slate-500 text-xs px-3 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:border-indigo-500" />
+        <button type="button" onclick="handleSendBtn()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition">Kirim</button>
+      </div>
+    </div>
+
+    <!-- ================= 3. HALAMAN PROFIL TERPISAH ================= -->
+    <div id="screen-profile" style="display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; top: 0; left: 0; background-color: #0f172a; overflow-y: auto; z-index: 20; padding: 16px;">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeProfile()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">←</button>
+          <h3 class="font-bold text-xs text-white">⚙️ Informasi & Pengaturan</h3>
+        </div>
+      </div>
+
+      <div class="mt-3 p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5 text-xs">
+        <div class="flex justify-between"><span class="text-slate-400">Nama</span><span id="p-name" class="font-bold text-white">-</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Status</span><span id="p-stage" class="text-emerald-300">-</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Trust Score</span><span id="p-trust" class="font-bold text-white">0</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Kado Favorit</span><span id="p-gift" class="text-pink-300 capitalize">-</span></div>
+      </div>
+
+      <div class="mt-3">
+        <h4 class="text-[11px] font-bold text-slate-400 mb-1">🖼️ Galeri CG</h4>
+        <div id="p-cg" class="space-y-1 text-xs"></div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-800 space-y-2">
+        <h4 class="text-[11px] font-bold text-slate-500">Pengaturan Data Lokal</h4>
+        <div class="flex gap-2">
+          <input id="new-name" type="text" placeholder="Nama baru..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
+          <button type="button" onclick="changeName()" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-xs font-semibold text-white">Ubah</button>
+        </div>
+        <button type="button" onclick="resetData()" class="w-full py-2 rounded-lg bg-red-950/60 text-red-300 border border-red-800/60 text-xs font-semibold">
+          🗑️ Reset Data & Riwayat Chat
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /** @type {Object.<string, {name: string, avatar: string, gift: string}>} */
+    const DB = {
+      luna: { name: "Luna", avatar: "👧", gift: "cokelat" },
+      felicia: { name: "Felicia", avatar: "👩", gift: "bunga" },
+      miyu: { name: "Miyu", avatar: "🎧", gift: "buku" },
+      aria: { name: "Aria", avatar: "🔮", gift: "kristal mana" }
+    };
+
+    /** @type {string|null} */
+    let curKey = null;
+    /** @type {any} */
+    let state = null;
+
+    function getTimeGreeting() {
+      const hour = new Date().getHours();
+      if (hour >= 4 && hour < 11) return "Selamat pagi";
+      if (hour >= 11 && hour < 15) return "Selamat siang";
+      if (hour >= 15 && hour < 18) return "Selamat sore";
+      return "Selamat malam";
+    }
+
+    /**
+     * @param {string} key
+     */
+    function selectCharacter(key) {
+      curKey = key;
+      const base = DB[key];
+      const saved = localStorage.getItem(`ae_v4_${key}`);
+
+      if (saved) {
+        state = JSON.parse(saved);
+      } else {
+        let powerAttr = "Normal";
+        if (key === 'aria') {
+          powerAttr = prompt("✨ Masukkan Atribut Sihir Pemain (Contoh: Api & Petir / Healer / Ilusi):", "Api & Petir") || "Api & Petir";
+        }
+
+        state = { 
+          name: base.name, 
+          trust: 15, 
+          stage: "Orang Asing", 
+          mood: "Normal", 
+          userPower: powerAttr,
+          memories: [], 
+          cgs: ["[CG #01] Pertemuan Pertama"],
+          history: [] 
+        };
+        save();
+      }
+
+      const menuEl = document.getElementById("screen-menu");
+      const chatEl = document.getElementById("screen-chat");
+      const profileEl = document.getElementById("screen-profile");
+      const chatBoxEl = document.getElementById("chat-box");
+
+      if (menuEl) menuEl.style.display = "none";
+      if (profileEl) profileEl.style.display = "none";
+      if (chatEl) chatEl.style.display = "flex";
+      if (chatBoxEl) chatBoxEl.innerHTML = "";
+      
+      updateUI();
+      renderChatHistory();
+
+      if (state.history.length === 0) {
+        const timeGreet = getTimeGreeting();
+        let welcome = `${timeGreet}! Senang bisa ngobrol lagi denganmu di waktu seperti ini.`;
+        if (key === 'aria') {
+          welcome = `${timeGreet}! Aku Aria dari Akademi Sihir. Aku dengar kamu memiliki atribut sihir ${state.userPower}. Senang bisa terhubung denganmu!`;
+        }
+        appendAndSaveBubble("char", welcome);
+      }
+    }
+
+    function goMenu() {
+      const chatEl = document.getElementById("screen-chat");
+      const profileEl = document.getElementById("screen-profile");
+      const menuEl = document.getElementById("screen-menu");
+      if (chatEl) chatEl.style.display = "none";
+      if (profileEl) profileEl.style.display = "none";
+      if (menuEl) menuEl.style.display = "flex";
+    }
+
+    function save() {
+      if (curKey && state) {
+        localStorage.setItem(`ae_v4_${curKey}`, JSON.stringify(state));
+      }
+    }
+
+    function updateUI() {
+      if (!curKey || !state) return;
+      const base = DB[curKey];
+      const avatarEl = document.getElementById("c-avatar");
+      const nameEl = document.getElementById("c-name");
+      const stageEl = document.getElementById("c-stage");
+      const locEl = document.getElementById("c-loc");
+      const timeEl = document.getElementById("c-time");
+      const moodEl = document.getElementById("c-mood");
+
+      if (avatarEl) avatarEl.textContent = base.avatar;
+      if (nameEl) nameEl.textContent = state.name;
+      if (stageEl) stageEl.textContent = `${state.stage} • Trust: ${state.trust}`;
+      if (locEl) locEl.textContent = curKey === 'aria' ? "Akademi Sihir • Ruang Studi" : "Kamar / Area Aktivitas";
+      if (timeEl) timeEl.textContent = new Date().toTimeString().slice(0, 5);
+      if (moodEl) moodEl.textContent = state.mood;
+    }
+
+    function renderChatHistory() {
+      const box = document.getElementById("chat-box");
+      if (!box) return;
+      box.innerHTML = "";
+      state.history.forEach(/** @param {{type: string, text: string}} item */ (item) => {
+        const div = document.createElement("div");
+        if (item.type === "user") {
+          div.className = "flex justify-end mb-2";
+          div.innerHTML = `<div class="max-w-[80%] px-3.5 py-2 rounded-2xl rounded-br-sm bg-indigo-600 text-white shadow">${item.text}</div>`;
+        } else {
+          div.className = "flex justify-start mb-2";
+          div.innerHTML = `<div class="max-w-[80%] px-3.5 py-2 rounded-2xl rounded-bl-sm bg-slate-800 text-slate-100 border border-slate-700 shadow">${item.text}</div>`;
+        }
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    /**
+     * @param {string} type
+     * @param {string} text
+     */
+    function appendAndSaveBubble(type, text) {
+      state.history.push({ type, text });
+      save();
+      renderChatHistory();
+    }
+
+    /** @param {string} txt */
+    function processChat(txt) {
+      if (!curKey) return;
+      const lower = txt.toLowerCase();
+      const gift = DB[curKey].gift;
+
+      let reply = "Oh begitu ya... Ceritakan lebih banyak dong, aku jadi penasaran!";
+      
+      if (lower.includes("beri kado") || lower.includes(gift)) {
+        state.trust += 5;
+        state.mood = "Senang ❤️";
+        reply = `Wah, terima kasih banyak kado ${gift}-nya! Kamu tahu banget apa yang aku suka.`;
+      } else if (lower.includes("suka") || lower.includes("sayang") || lower.includes("cinta")) {
+        // Logika Berdasarkan Status Hubungan (Stage-Aware)
+        if (state.stage === "Orang Asing") {
+          state.trust += 1;
+          state.mood = "Heran 🤨";
+          reply = "Hah? Kita kan baru kenal dan masih asing... Kok tiba-tiba ngomong begitu? Ada-ada saja kamu.";
+        } else {
+          state.trust += 3;
+          state.mood = "Blushing 😳";
+          reply = "Eh?! Tiba-tiba banget ngomong gitu... Bikin aku salah tingkah tahu nggak!";
+        }
+      } else if (lower.includes("maaf")) {
+        state.trust += 2;
+        state.mood = "Normal 😊";
+        reply = "Iya, dimaafin kok. Jangan diulangi lagi ya, santai saja.";
+      } else if (lower.includes("cuaca") || lower.includes("hujan") || lower.includes("panas")) {
+        state.trust += 1;
+        state.mood = "Santai 🌤️";
+        reply = "Iya nih, cuaca hari ini lumayan kerasa ya. Jangan lupa jaga kesehatan dan tetap semangat!";
+      } else if (lower.includes("sekolah") || lower.includes("kerja") || lower.includes("tugas")) {
+        state.trust += 2;
+        state.mood = "Fokus 📚";
+        reply = "Wah, kedengarannya sibuk banget ya hari ini. Jangan terlalu diforsir, istirahat kalau capek, ya!";
+      } else if (lower.includes("salam") || lower.includes("halo") || lower.includes("hai")) {
+        state.trust += 1;
+        state.mood = "Senang ✨";
+        reply = `Hai juga! Senang rasanya kamu nyapa aku di waktu ${getTimeGreeting().toLowerCase()} ini. Ada yang seru hari ini?`;
+      } else if (lower.includes("kabarmu") || lower.includes("gimana kabar")) {
+        state.trust += 2;
+        state.mood = "Senang 😊";
+        reply = "Kabarku baik dan menyenangkan, apalagi bisa ngobrol sama kamu sekarang. Kamu sendiri gimana?";
+      } else {
+        state.trust += 1;
+      }
+
+      // Sistem Milestone Trust Stage
+      if (state.trust >= 30 && state.stage === "Orang Asing") {
+        state.stage = "Kenalan Dekat";
+        state.cgs.push("[CG #02] Momen Kedekatan");
+      } else if (state.trust >= 60 && state.stage === "Kenalan Dekat") {
+        state.stage = "Sahabat Akrab";
+        state.cgs.push("[CG #03] Ikatan Spesial");
+      }
+
+      appendAndSaveBubble("char", reply);
+      updateUI();
+    }
+
+    function handleSend() {
+      const input = /** @type {HTMLInputElement|null} */ (document.getElementById("msg-input"));
+      if (!input) return;
+      const val = input.value.trim();
+      if (!val) return;
+      
+      appendAndSaveBubble("user", val);
+      input.value = "";
+      setTimeout(() => processChat(val), 400);
+    }
+
+    function handleSendBtn() {
+      handleSend();
+    }
+
+    /** @param {KeyboardEvent} e */
+    function checkEnter(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSend();
+      }
+    }
+
+    /** @param {string} type */
+    function quickAction(type) {
+      if (!curKey) return;
+      if (type === 'kado') {
+        appendAndSaveBubble("user", `beri kado ${DB[curKey].gift}`);
+        setTimeout(() => processChat(`beri kado ${DB[curKey].gift}`), 400);
+      }
+      if (type === 'hobi') {
+        appendAndSaveBubble("user", "Aku suka baca buku dan santai menikmati hari");
+        setTimeout(() => {
+          state.trust += 2;
+          appendAndSaveBubble("char", "Wah, hobi yang sangat menenangkan! Aku juga suka menghabiskan waktu dengan cara yang damai.");
+          updateUI();
+        }, 400);
+      }
+      if (type === 'maaf') {
+        appendAndSaveBubble("user", "maaf ya kalau ada salah");
+        setTimeout(() => processChat("maaf ya"), 400);
+      }
+    }
+
+    function openProfile() {
+      if (!curKey || !state) return;
+      const nameEl = document.getElementById("p-name");
+      const stageEl = document.getElementById("p-stage");
+      const trustEl = document.getElementById("p-trust");
+      const giftEl = document.getElementById("p-gift");
+      const cgEl = document.getElementById("p-cg");
+      const profileEl = document.getElementById("screen-profile");
+      const chatEl = document.getElementById("screen-chat");
+
+      if (nameEl) nameEl.textContent = state.name;
+      if (stageEl) stageEl.textContent = `${state.stage} ${curKey === 'aria' ? '• Atribut: ' + state.userPower : ''}`;
+      if (trustEl) trustEl.textContent = String(state.trust);
+      if (giftEl) giftEl.textContent = DB[curKey].gift;
+      if (cgEl) cgEl.innerHTML = state.cgs.map(/** @param {string} c */ (c) => `<div class="p-2 rounded bg-slate-900 text-indigo-300 mt-1">${c}</div>`).join("");
+      
+      if (chatEl) chatEl.style.display = "none";
+      if (profileEl) profileEl.style.display = "flex";
+    }
+
+    function closeProfile() {
+      const profileEl = document.getElementById("screen-profile");
+      const chatEl = document.getElementById("screen-chat");
+      if (profileEl) profileEl.style.display = "none";
+      if (chatEl) chatEl.style.display = "flex";
+    }
+
+    function changeName() {
+      const input = /** @type {HTMLInputElement|null} */ (document.getElementById("new-name"));
+      if (!input) return;
+      const val = input.value.trim();
+      if (!val) return;
+      state.name = val;
+      input.value = "";
+      save();
+      updateUI();
+      openProfile();
+    }
+
+    function resetData() {
+      if (!curKey) return;
+      if (confirm("Reset data dan seluruh riwayat chat karakter ini?")) {
+        localStorage.removeItem(`ae_v4_${curKey}`);
+        closeProfile();
+        selectCharacter(curKey);
+      }
+    }
+  </script>
+</body>
+</html>
