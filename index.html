@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AuraEcho - Master Build v4.0 (Migration Ready)</title>
+  <title>AuraEcho - Master Build v4.0 (FastAPI Connected)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
@@ -19,7 +19,7 @@
     <div id="screen-menu" style="display: flex; flex-direction: column; height: 100%; overflow-y: auto; padding: 16px;">
       <div class="text-center my-3">
         <span class="px-3 py-1 text-[10px] font-semibold uppercase bg-indigo-500/20 text-indigo-300 rounded-full border border-indigo-500/30">
-          Master Build v4.0 (Ready)
+          Master Build v4.0 (FastAPI Connected)
         </span>
         <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent mt-1">
           AuraEcho
@@ -102,7 +102,7 @@
         <button onclick="quickAction('maaf')" class="shrink-0 px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-750 transition">🙏 Minta Maaf</button>
       </div>
 
-      <!-- Input Bar (Formless & Anti-Mental) -->
+      <!-- Input Bar -->
       <div class="p-2.5 bg-slate-900 border-t border-slate-800 flex gap-2 shrink-0">
         <input id="msg-input" type="text" placeholder="Ketik pesan..." autocomplete="off" onkeydown="checkEnter(event)"
           class="flex-1 bg-slate-800 text-white placeholder-slate-500 text-xs px-3 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:border-indigo-500" />
@@ -146,7 +146,6 @@
   </div>
 
   <script>
-    /** @type {Object.<string, {name: string, avatar: string, gift: string}>} */
     const DB = {
       luna: { name: "Luna", avatar: "👧", gift: "cokelat" },
       felicia: { name: "Felicia", avatar: "👩", gift: "bunga" },
@@ -154,9 +153,7 @@
       aria: { name: "Aria", avatar: "🔮", gift: "kristal mana" }
     };
 
-    /** @type {string|null} */
     let curKey = null;
-    /** @type {any} */
     let state = null;
 
     function getTimeGreeting() {
@@ -167,9 +164,6 @@
       return "Selamat malam";
     }
 
-    /**
-     * @param {string} key
-     */
     function selectCharacter(key) {
       curKey = key;
       const base = DB[key];
@@ -196,15 +190,10 @@
         save();
       }
 
-      const menuEl = document.getElementById("screen-menu");
-      const chatEl = document.getElementById("screen-chat");
-      const profileEl = document.getElementById("screen-profile");
-      const chatBoxEl = document.getElementById("chat-box");
-
-      if (menuEl) menuEl.style.display = "none";
-      if (profileEl) profileEl.style.display = "none";
-      if (chatEl) chatEl.style.display = "flex";
-      if (chatBoxEl) chatBoxEl.innerHTML = "";
+      document.getElementById("screen-menu").style.display = "none";
+      document.getElementById("screen-profile").style.display = "none";
+      document.getElementById("screen-chat").style.display = "flex";
+      document.getElementById("chat-box").innerHTML = "";
       
       updateUI();
       renderChatHistory();
@@ -220,12 +209,9 @@
     }
 
     function goMenu() {
-      const chatEl = document.getElementById("screen-chat");
-      const profileEl = document.getElementById("screen-profile");
-      const menuEl = document.getElementById("screen-menu");
-      if (chatEl) chatEl.style.display = "none";
-      if (profileEl) profileEl.style.display = "none";
-      if (menuEl) menuEl.style.display = "flex";
+      document.getElementById("screen-chat").style.display = "none";
+      document.getElementById("screen-profile").style.display = "none";
+      document.getElementById("screen-menu").style.display = "flex";
     }
 
     function save() {
@@ -237,26 +223,19 @@
     function updateUI() {
       if (!curKey || !state) return;
       const base = DB[curKey];
-      const avatarEl = document.getElementById("c-avatar");
-      const nameEl = document.getElementById("c-name");
-      const stageEl = document.getElementById("c-stage");
-      const locEl = document.getElementById("c-loc");
-      const timeEl = document.getElementById("c-time");
-      const moodEl = document.getElementById("c-mood");
-
-      if (avatarEl) avatarEl.textContent = base.avatar;
-      if (nameEl) nameEl.textContent = state.name;
-      if (stageEl) stageEl.textContent = `${state.stage} • Trust: ${state.trust}`;
-      if (locEl) locEl.textContent = curKey === 'aria' ? "Akademi Sihir • Ruang Studi" : "Kamar / Area Aktivitas";
-      if (timeEl) timeEl.textContent = new Date().toTimeString().slice(0, 5);
-      if (moodEl) moodEl.textContent = state.mood;
+      document.getElementById("c-avatar").textContent = base.avatar;
+      document.getElementById("c-name").textContent = state.name;
+      document.getElementById("c-stage").textContent = `${state.stage} • Trust: ${state.trust}`;
+      document.getElementById("c-loc").textContent = curKey === 'aria' ? "Akademi Sihir • Ruang Studi" : "Kamar / Area Aktivitas";
+      document.getElementById("c-time").textContent = new Date().toTimeString().slice(0, 5);
+      document.getElementById("c-mood").textContent = state.mood;
     }
 
     function renderChatHistory() {
       const box = document.getElementById("chat-box");
       if (!box) return;
       box.innerHTML = "";
-      state.history.forEach(/** @param {{type: string, text: string}} item */ (item) => {
+      state.history.forEach((item) => {
         const div = document.createElement("div");
         if (item.type === "user") {
           div.className = "flex justify-end mb-2";
@@ -270,78 +249,47 @@
       box.scrollTop = box.scrollHeight;
     }
 
-    /**
-     * @param {string} type
-     * @param {string} text
-     */
     function appendAndSaveBubble(type, text) {
       state.history.push({ type, text });
       save();
       renderChatHistory();
     }
 
-    /** @param {string} txt */
-    function processChat(txt) {
+    // TERHUBUNG KE BACKEND FASTAPI DI HP
+    async function processChat(txt) {
       if (!curKey) return;
-      const lower = txt.toLowerCase();
-      const gift = DB[curKey].gift;
-
-      let reply = "Oh begitu ya... Ceritakan lebih banyak dong, aku jadi penasaran!";
       
-      if (lower.includes("beri kado") || lower.includes(gift)) {
-        state.trust += 5;
-        state.mood = "Senang ❤️";
-        reply = `Wah, terima kasih banyak kado ${gift}-nya! Kamu tahu banget apa yang aku suka.`;
-} else if ((lower.includes("suka") || lower.includes("sayang") || lower.includes("cinta")) && !lower.includes("buah") && !lower.includes("makanan") && !lower.includes("buku") && !lower.includes("hobi") && !lower.includes("musik")) {
-      // Logika Berdasarkan Status Hubungan (Stage-Aware)
-        if (state.stage === "Orang Asing") {
-          state.trust += 1;
-          state.mood = "Heran 🤨";
-          reply = "Hah? Kita kan baru kenal dan masih asing... Kok tiba-tiba ngomong begitu? Ada-ada saja kamu.";
-        } else {
-          state.trust += 3;
-          state.mood = "Blushing 😳";
-          reply = "Eh?! Tiba-tiba banget ngomong gitu... Bikin aku salah tingkah tahu nggak!";
+      try {
+        // Melakukan request HTTP POST ke server FastAPI lokal
+        let response = await fetch('http://127.0.0.1:8000/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: txt,
+            character: state.name
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("Gagal terhubung ke server backend.");
         }
-      } else if (lower.includes("maaf")) {
-        state.trust += 2;
-        state.mood = "Normal 😊";
-        reply = "Iya, dimaafin kok. Jangan diulangi lagi ya, santai saja.";
-      } else if (lower.includes("cuaca") || lower.includes("hujan") || lower.includes("panas")) {
-        state.trust += 1;
-        state.mood = "Santai 🌤️";
-        reply = "Iya nih, cuaca hari ini lumayan kerasa ya. Jangan lupa jaga kesehatan dan tetap semangat!";
-      } else if (lower.includes("sekolah") || lower.includes("kerja") || lower.includes("tugas")) {
-        state.trust += 2;
-        state.mood = "Fokus 📚";
-        reply = "Wah, kedengarannya sibuk banget ya hari ini. Jangan terlalu diforsir, istirahat kalau capek, ya!";
-      } else if (lower.includes("salam") || lower.includes("halo") || lower.includes("hai")) {
-        state.trust += 1;
-        state.mood = "Senang ✨";
-        reply = `Hai juga! Senang rasanya kamu nyapa aku di waktu ${getTimeGreeting().toLowerCase()} ini. Ada yang seru hari ini?`;
-      } else if (lower.includes("kabarmu") || lower.includes("gimana kabar")) {
-        state.trust += 2;
-        state.mood = "Senang 😊";
-        reply = "Kabarku baik dan menyenangkan, apalagi bisa ngobrol sama kamu sekarang. Kamu sendiri gimana?";
-      } else {
-        state.trust += 1;
-      }
 
-      // Sistem Milestone Trust Stage
-      if (state.trust >= 30 && state.stage === "Orang Asing") {
-        state.stage = "Kenalan Dekat";
-        state.cgs.push("[CG #02] Momen Kedekatan");
-      } else if (state.trust >= 60 && state.stage === "Kenalan Dekat") {
-        state.stage = "Sahabat Akrab";
-        state.cgs.push("[CG #03] Ikatan Spesial");
-      }
+        let data = await response.json();
+        
+        // Menampilkan balasan yang dikirim dari server Python (FastAPI)
+        appendAndSaveBubble("char", data.response);
+        updateUI();
 
-      appendAndSaveBubble("char", reply);
-      updateUI();
+      } catch (error) {
+        console.error("Error:", error);
+        appendAndSaveBubble("char", "[Sistem] Gagal terhubung ke backend FastAPI di HP. Pastikan server Uvicorn sudah menyala!");
+      }
     }
 
     function handleSend() {
-      const input = /** @type {HTMLInputElement|null} */ (document.getElementById("msg-input"));
+      const input = document.getElementById("msg-input");
       if (!input) return;
       const val = input.value.trim();
       if (!val) return;
@@ -355,7 +303,6 @@
       handleSend();
     }
 
-    /** @param {KeyboardEvent} e */
     function checkEnter(e) {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -363,56 +310,42 @@
       }
     }
 
-    /** @param {string} type */
     function quickAction(type) {
       if (!curKey) return;
+      let msg = "";
       if (type === 'kado') {
-        appendAndSaveBubble("user", `beri kado ${DB[curKey].gift}`);
-        setTimeout(() => processChat(`beri kado ${DB[curKey].gift}`), 400);
+        msg = `beri kado ${DB[curKey].gift}`;
+      } else if (type === 'hobi') {
+        msg = "Aku suka baca buku dan santai menikmati hari";
+      } else if (type === 'maaf') {
+        msg = "maaf ya kalau ada salah";
       }
-      if (type === 'hobi') {
-        appendAndSaveBubble("user", "Aku suka baca buku dan santai menikmati hari");
-        setTimeout(() => {
-          state.trust += 2;
-          appendAndSaveBubble("char", "Wah, hobi yang sangat menenangkan! Aku juga suka menghabiskan waktu dengan cara yang damai.");
-          updateUI();
-        }, 400);
-      }
-      if (type === 'maaf') {
-        appendAndSaveBubble("user", "maaf ya kalau ada salah");
-        setTimeout(() => processChat("maaf ya"), 400);
+      
+      if (msg) {
+        appendAndSaveBubble("user", msg);
+        setTimeout(() => processChat(msg), 400);
       }
     }
 
     function openProfile() {
       if (!curKey || !state) return;
-      const nameEl = document.getElementById("p-name");
-      const stageEl = document.getElementById("p-stage");
-      const trustEl = document.getElementById("p-trust");
-      const giftEl = document.getElementById("p-gift");
-      const cgEl = document.getElementById("p-cg");
-      const profileEl = document.getElementById("screen-profile");
-      const chatEl = document.getElementById("screen-chat");
-
-      if (nameEl) nameEl.textContent = state.name;
-      if (stageEl) stageEl.textContent = `${state.stage} ${curKey === 'aria' ? '• Atribut: ' + state.userPower : ''}`;
-      if (trustEl) trustEl.textContent = String(state.trust);
-      if (giftEl) giftEl.textContent = DB[curKey].gift;
-      if (cgEl) cgEl.innerHTML = state.cgs.map(/** @param {string} c */ (c) => `<div class="p-2 rounded bg-slate-900 text-indigo-300 mt-1">${c}</div>`).join("");
+      document.getElementById("p-name").textContent = state.name;
+      document.getElementById("p-stage").textContent = `${state.stage} ${curKey === 'aria' ? '• Atribut: ' + state.userPower : ''}`;
+      document.getElementById("p-trust").textContent = String(state.trust);
+      document.getElementById("p-gift").textContent = DB[curKey].gift;
+      document.getElementById("p-cg").innerHTML = state.cgs.map((c) => `<div class="p-2 rounded bg-slate-900 text-indigo-300 mt-1">${c}</div>`).join("");
       
-      if (chatEl) chatEl.style.display = "none";
-      if (profileEl) profileEl.style.display = "flex";
+      document.getElementById("screen-chat").style.display = "none";
+      document.getElementById("screen-profile").style.display = "flex";
     }
 
     function closeProfile() {
-      const profileEl = document.getElementById("screen-profile");
-      const chatEl = document.getElementById("screen-chat");
-      if (profileEl) profileEl.style.display = "none";
-      if (chatEl) chatEl.style.display = "flex";
+      document.getElementById("screen-profile").style.display = "none";
+      document.getElementById("screen-chat").style.display = "flex";
     }
 
     function changeName() {
-      const input = /** @type {HTMLInputElement|null} */ (document.getElementById("new-name"));
+      const input = document.getElementById("new-name");
       if (!input) return;
       const val = input.value.trim();
       if (!val) return;
