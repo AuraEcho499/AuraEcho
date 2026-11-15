@@ -292,8 +292,8 @@
         state.trust += 5;
         state.mood = "Senang ❤️";
         reply = `Wah, terima kasih banyak kado ${gift}-nya! Kamu tahu banget apa yang aku suka.`;
-      } else if (lower.includes("suka") || lower.includes("sayang") || lower.includes("cinta")) {
-        // Logika Berdasarkan Status Hubungan (Stage-Aware)
+} else if ((lower.includes("suka") || lower.includes("sayang") || lower.includes("cinta")) && !lower.includes("buah") && !lower.includes("makanan") && !lower.includes("buku") && !lower.includes("hobi") && !lower.includes("musik")) {
+      // Logika Berdasarkan Status Hubungan (Stage-Aware)
         if (state.stage === "Orang Asing") {
           state.trust += 1;
           state.mood = "Heran 🤨";
